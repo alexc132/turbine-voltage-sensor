@@ -4,8 +4,6 @@ int CLK = 2;
 int DIO = 3;
 const byte VIN = A0;
 float voltage;
-int voltageInt;
-String voltageString;
 
 TM1637 tm(CLK, DIO);
 
@@ -21,17 +19,30 @@ void setup() {
 
 }
 void readSensor() {
-  voltage = analogRead(VIN);            // read the voltage from the EC Meter
+  voltage = analogRead(VIN);
   voltage = voltage * 5.0;
   voltage = voltage / 1024;
 }
 
-void loop() {
-  readSensor();
-  Serial.print("Voltage:");
-  Serial.print(voltage);
-  Serial.println();
-  
+void startUp(){
+  for(int i = 5; i > 0; i--){
+    tm.display(3, i);
+    delay(1000);
+  }
+}
+
+void test(){
+  for(int i = 0; i <= 201){
+    readSensor();
+    displayVoltage();
+    //Serial.print("Voltage:");
+    Serial.print(voltage);
+    Serial.println();
+    delay(100);
+  }
+}
+
+void displayVoltage(){
   //tm.display(position, character)
   if(voltage == 0.0){
     tm.display(1, 0);
@@ -46,6 +57,7 @@ void loop() {
     tm.displayNum(voltage, 2);
     tm.display(1,0);
   }
-  delay(100);
+}
 
+void loop() {
 }
